@@ -17,12 +17,12 @@ export const note = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
-  (table) => ({
-    embeddingIndex: index("embeddingIndex").using(
+  (table) => [
+    index("embeddingIndex").using(
       "hnsw",
       table.embedding.op("vector_cosine_ops"),
     ),
-  }),
+  ],
 );
 
 export type Note = typeof note.$inferSelect;

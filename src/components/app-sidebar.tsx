@@ -1,3 +1,5 @@
+"use client";
+
 import { Icons } from "@/components/icons";
 import { Logo } from "@/components/logo";
 import {
@@ -12,8 +14,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function AppSidebar() {
+  const pathname = usePathname();
   return (
     <Sidebar>
       <SidebarHeader className="px-4 pt-4">
@@ -24,7 +28,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Notes</SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton asChild isActive={pathname === "/"}>
                 <Link href="/">
                   <Icons.notebookPen />
                   <span>Journal</span>
@@ -34,7 +38,7 @@ export function AppSidebar() {
           </SidebarMenu>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton asChild isActive={pathname === "/knowledge"}>
                 <Link href="/knowledge">
                   <Icons.bookOpenText />
                   <span>Knowledge</span>
@@ -47,7 +51,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>AI</SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton asChild isActive={pathname === "/chat"}>
                 <Link href="/chat">
                   <Icons.botMessageSquare />
                   <span>Chat</span>

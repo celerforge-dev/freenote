@@ -1,6 +1,10 @@
 import "@/app/globals.css";
 import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
@@ -24,10 +28,12 @@ export default function RootLayout({
       >
         <SidebarProvider>
           <AppSidebar />
-          <main>
-            <SidebarTrigger />
-            {children}
-          </main>
+          <SidebarInset>
+            <header className="flex h-16 items-center border-b px-2">
+              <SidebarTrigger />
+            </header>
+            <main>{children}</main>
+          </SidebarInset>
         </SidebarProvider>
       </body>
     </html>
