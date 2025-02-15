@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  ensureJournalExists,
-  getJournals,
-  getJournalsCount,
-  updateJournal,
-} from "@/actions/journal";
+import { useJournalUpdates } from "@/app/(journal)/use-journal-updates";
+import { useJournals } from "@/app/(journal)/use-journals";
 import { Icons } from "@/components/icons";
-import { Note } from "@/lib/db/schema";
-import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -21,56 +15,27 @@ function LoadingSpinner({ className }: { className?: string }) {
 }
 
 export default function Page() {
-  const [journals, setJournals] = useState<Note[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [pendingUpdates, setPendingUpdates] = useState<Record<number, string>>(
-    {},
-  );
-  const debouncedUpdates = useDebounce(pendingUpdates, 1000);
-  const [page, setPage] = useState(0);
+  const {
+    journals,
+    totalCount,
+    isLoading,
+    error,
+    loadInitialData,
+    loadMoreJournals,
+  } = useJournals();
+  const { handleContentChange } = useJournalUpdates();
   const { ref, inView } = useInView();
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   useEffect(() => {
-    const loadInitialData = async () => {
-      try {
-        setIsInitialLoading(true);
-        await ensureJournalExists();
-        const [journals, count] = await Promise.all([
-          getJournals(10, 0),
-          getJournalsCount(),
-        ]);
-        setJournals(journals);
-        setTotalCount(count);
-        setPage(1);
-      } finally {
-        setIsInitialLoading(false);
-      }
-    };
-
     loadInitialData();
-  }, []);
+  }, [loadInitialData]);
 
   useEffect(() => {
-    if (inView && page > 0 && !isLoadingMore && journals.length < totalCount) {
-      setIsLoadingMore(true);
-      getJournals(10, page * 10).then((newJournals) => {
-        setJournals((prev) => [...prev, ...newJournals]);
-        setPage((p) => p + 1);
-        setIsLoadingMore(false);
-      });
+    if (inView) {
+      loadMoreJournals();
     }
-  }, [inView, page, isLoadingMore, journals.length, totalCount]);
-
-  useEffect(() => {
-    if (Object.keys(debouncedUpdates).length > 0) {
-      Object.entries(debouncedUpdates).forEach(([id, content]) => {
-        updateJournal(Number(id), content);
-      });
-    }
-  }, [debouncedUpdates]);
+  }, [inView, loadMoreJournals]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -81,14 +46,18 @@ export default function Page() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleContentChange = (id: number, content: string) => {
-    setPendingUpdates((prev) => ({ ...prev, [id]: content }));
-  };
-
-  if (isInitialLoading) {
+  if (isLoading.initial) {
     return (
       <div className="flex h-[calc(100vh-64px)] items-center justify-center">
         <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-[calc(100vh-64px)] items-center justify-center text-red-500">
+        {error}
       </div>
     );
   }
@@ -115,10 +84,10 @@ export default function Page() {
       ))}
 
       <div ref={ref} className="h-10 w-full">
-        {isLoadingMore && <LoadingSpinner />}
+        {isLoading.more && <LoadingSpinner />}
         {journals.length >= totalCount && journals.length > 0 && (
           <div className="flex justify-center py-6 text-secondary-foreground">
-            No more entries
+            No more journals.
           </div>
         )}
       </div>
