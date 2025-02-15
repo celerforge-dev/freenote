@@ -1,9 +1,10 @@
 import {
+  ArrowUp,
+  BookOpenText,
   BotMessageSquare,
   LucideIcon,
   NotebookPen,
   NotebookText,
-  BookOpenText,
   Sparkles,
 } from "lucide-react";
 
@@ -13,4 +14,5 @@ export const Icons = {
   botMessageSquare: BotMessageSquare,
   notebookPen: NotebookPen,
   bookOpenText: BookOpenText,
+  arrowUp: ArrowUp,
 } satisfies Record<string, LucideIcon>;

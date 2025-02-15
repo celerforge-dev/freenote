@@ -1,5 +1,7 @@
+import { objEnum } from "@/lib/utils";
 import {
   index,
+  pgEnum,
   pgTable,
   serial,
   text,
@@ -7,10 +9,13 @@ import {
   vector,
 } from "drizzle-orm/pg-core";
 
+export const NoteTypeEnum = pgEnum("note_type", ["journal", "knowledge"]);
+
 export const note = pgTable(
   "note",
   {
     id: serial("id").primaryKey(),
+    type: NoteTypeEnum("type").notNull(),
     title: text("title").notNull(),
     content: text("content").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -25,5 +30,6 @@ export const note = pgTable(
   ],
 );
 
+export const NoteType = objEnum(["journal", "knowledge"]);
 export type Note = typeof note.$inferSelect;
 export type InsertNote = typeof note.$inferInsert;
