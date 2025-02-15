@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { noteTable, NoteType } from "@/lib/db/schema/note";
-import { and, desc, eq, gte, lte } from "drizzle-orm";
+import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
 
 function createJournalEntry(date: Date) {
   return {
@@ -30,6 +30,14 @@ export async function createEmptyJournal(date: Date) {
 
 export async function updateJournal(id: number, content: string) {
   return db.update(noteTable).set({ content }).where(eq(noteTable.id, id));
+}
+
+export async function getJournalsCount() {
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(noteTable)
+    .where(eq(noteTable.type, NoteType.journal));
+  return Number(result[0].count);
 }
 
 export async function getJournals(limit = 10, offset = 0) {
