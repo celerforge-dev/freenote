@@ -11,7 +11,7 @@ import {
 
 export const NoteTypeEnum = pgEnum("note_type", ["journal", "knowledge"]);
 
-export const note = pgTable(
+export const noteTable = pgTable(
   "note",
   {
     id: serial("id").primaryKey(),
@@ -31,5 +31,5 @@ export const note = pgTable(
 );
 
 export const NoteType = objEnum(["journal", "knowledge"]);
-export type Note = typeof note.$inferSelect;
-export type InsertNote = typeof note.$inferInsert;
+export type Note = typeof noteTable.$inferSelect;
+export type InsertNote = typeof noteTable.$inferInsert;

@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  createEmptyJournal,
-  createMissingJournals,
+  ensureJournalExists,
   getJournals,
-  getLatestJournal,
   updateJournal,
 } from "@/actions/journal";
 import { Icons } from "@/components/icons";
@@ -16,62 +14,21 @@ export default function Page() {
   const [journals, setJournals] = useState<Note[]>([]);
   const [{ y }, scrollTo] = useWindowScroll();
   const [page, setPage] = useState(0);
-  const [lastMidnight, setLastMidnight] = useState<Date>(new Date());
   const [pendingUpdates, setPendingUpdates] = useState<Record<number, string>>(
     {},
   );
   const debouncedUpdates = useDebounce(pendingUpdates, 1000);
 
   useEffect(() => {
-    getJournals(10, page * 10).then((newJournals) => {
-      setJournals((prev) => {
-        const existingIds = new Set(prev.map((journal) => journal.id));
-        const uniqueNewJournals = newJournals.filter(
-          (journal) => !existingIds.has(journal.id),
-        );
-        return [...prev, ...uniqueNewJournals];
+    const loadJournals = async () => {
+      await ensureJournalExists().then(async () => {
+        const newJournals = await getJournals(10, 0);
+        setJournals(newJournals);
       });
-    });
-  }, [page]);
-
-  useEffect(() => {
-    const init = async () => {
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-
-      const latestJournal = await getLatestJournal();
-
-      if (!latestJournal) {
-        await createEmptyJournal(now);
-      } else {
-        const latestDate = new Date(latestJournal.createdAt);
-        if (latestDate.toDateString() !== now.toDateString()) {
-          await createMissingJournals(latestDate, now);
-        }
-      }
-
-      const newJournals = await getJournals(10, 0);
-      setJournals(newJournals);
     };
 
-    init();
+    loadJournals();
   }, []);
-
-  useEffect(() => {
-    const checkNewDay = () => {
-      const now = new Date();
-      if (now.getDate() !== lastMidnight.getDate()) {
-        createEmptyJournal(now).then(() => {
-          setPage(0);
-          setJournals([]);
-        });
-        setLastMidnight(now);
-      }
-    };
-
-    const interval = setInterval(checkNewDay, 1000 * 60);
-    return () => clearInterval(interval);
-  }, [lastMidnight]);
 
   useEffect(() => {
     const isNearBottom =
@@ -79,28 +36,25 @@ export default function Page() {
       document.documentElement.scrollHeight - 100;
 
     if (isNearBottom) {
-      setPage((p) => p + 1);
+      getJournals(10, (page + 1) * 10).then((newJournals) => {
+        if (newJournals.length > 0) {
+          setJournals((prev) => [...prev, ...newJournals]);
+          setPage((p) => p + 1);
+        }
+      });
     }
-  }, [y]);
+  }, [y, page]);
 
   useEffect(() => {
-    const updateJournals = async () => {
-      const updates = Object.entries(debouncedUpdates);
-      for (const [id, content] of updates) {
-        await updateJournal(Number(id), content);
-      }
-    };
-
     if (Object.keys(debouncedUpdates).length > 0) {
-      updateJournals();
+      Object.entries(debouncedUpdates).forEach(([id, content]) => {
+        updateJournal(Number(id), content);
+      });
     }
   }, [debouncedUpdates]);
 
   const handleContentChange = (id: number, content: string) => {
-    setPendingUpdates((prev) => ({
-      ...prev,
-      [id]: content,
-    }));
+    setPendingUpdates((prev) => ({ ...prev, [id]: content }));
   };
 
   return (
@@ -124,16 +78,14 @@ export default function Page() {
         </div>
       ))}
 
-      <div>
-        {y !== undefined && (y ?? 0) > 500 && (
-          <button
-            onClick={() => scrollTo({ top: 0, behavior: "smooth" })}
-            className="fixed bottom-6 right-6 flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-background"
-          >
-            <Icons.arrowUp size={18} />
-          </button>
-        )}
-      </div>
+      {y !== undefined && (y ?? 0) > 500 && (
+        <button
+          onClick={() => scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-6 right-6 flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-background"
+        >
+          <Icons.arrowUp size={18} />
+        </button>
+      )}
     </div>
   );
 }
