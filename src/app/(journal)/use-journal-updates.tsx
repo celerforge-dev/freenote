@@ -1,4 +1,4 @@
-import { updateJournal } from "@/actions/journal";
+import { db } from "@/lib/db";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 
@@ -15,7 +15,9 @@ export function useJournalUpdates() {
 
       try {
         await Promise.all(
-          updates.map(([id, content]) => updateJournal(Number(id), content)),
+          updates.map(([id, content]) =>
+            db.notes.update(Number(id), { content, updatedAt: new Date() }),
+          ),
         );
       } catch (err) {
         console.error("Failed to update journals:", err);

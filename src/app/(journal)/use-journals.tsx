@@ -1,10 +1,44 @@
-import {
-  ensureJournalExists,
-  getJournals,
-  getJournalsCount,
-} from "@/actions/journal";
-import { Note } from "@/lib/db/schema";
+import { db, Note, NoteType } from "@/lib/db";
 import { useCallback, useState } from "react";
+
+function createJournalEntry(date: Date): Omit<Note, "id"> {
+  return {
+    type: NoteType.Journal,
+    title: date.toLocaleDateString(),
+    content: "",
+    embedding: [],
+    createdAt: date,
+    updatedAt: null,
+    embeddingUpdatedAt: null,
+  };
+}
+
+async function createEmptyJournal(date: Date) {
+  return db.notes.add(createJournalEntry(date));
+}
+
+async function createMissingJournals(fromDate: Date, toDate: Date) {
+  const existingJournals = await db.notes
+    .where("type")
+    .equals(NoteType.Journal)
+    .filter((note) => note.createdAt >= fromDate && note.createdAt <= toDate)
+    .toArray();
+
+  const existingDates = new Set(
+    existingJournals.map((j) => j.createdAt.toDateString()),
+  );
+
+  const journalsToCreate = [];
+  for (let d = new Date(fromDate); d <= toDate; d.setDate(d.getDate() + 1)) {
+    if (!existingDates.has(d.toDateString())) {
+      journalsToCreate.push(createJournalEntry(new Date(d)));
+    }
+  }
+
+  if (journalsToCreate.length > 0) {
+    await db.notes.bulkAdd(journalsToCreate);
+  }
+}
 
 export function useJournals() {
   const [journals, setJournals] = useState<Note[]>([]);
@@ -16,14 +50,45 @@ export function useJournals() {
   });
   const [error, setError] = useState<string | null>(null);
 
+  const ensureJournalExists = async () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const latestJournal = await db.notes
+      .where("type")
+      .equals(NoteType.Journal)
+      .reverse()
+      .first();
+
+    if (!latestJournal) {
+      await createEmptyJournal(today);
+      return;
+    }
+
+    const latestDate = new Date(latestJournal.createdAt);
+    latestDate.setHours(0, 0, 0, 0);
+
+    if (latestDate < today) {
+      await createMissingJournals(latestDate, today);
+    }
+  };
+
   const loadInitialData = useCallback(async () => {
     try {
       setIsLoading((prev) => ({ ...prev, initial: true }));
       await ensureJournalExists();
+
       const [journalData, count] = await Promise.all([
-        getJournals(10, 0),
-        getJournalsCount(),
+        db.notes
+          .where("type")
+          .equals(NoteType.Journal)
+          .reverse()
+          .offset(0)
+          .limit(10)
+          .toArray(),
+        db.notes.where("type").equals(NoteType.Journal).count(),
       ]);
+
       setJournals(journalData);
       setTotalCount(count);
       setPage(1);
@@ -39,7 +104,14 @@ export function useJournals() {
 
     try {
       setIsLoading((prev) => ({ ...prev, more: true }));
-      const newJournals = await getJournals(10, page * 10);
+      const newJournals = await db.notes
+        .where("type")
+        .equals(NoteType.Journal)
+        .reverse()
+        .offset(page * 10)
+        .limit(10)
+        .toArray();
+
       setJournals((prev) => [...prev, ...newJournals]);
       setPage((p) => p + 1);
     } catch (err) {
