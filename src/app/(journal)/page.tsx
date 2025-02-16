@@ -2,6 +2,7 @@
 
 import { useJournalUpdates } from "@/app/(journal)/use-journal-updates";
 import { useJournals } from "@/app/(journal)/use-journals";
+import Editor from "@/components/editor";
 import { Icons } from "@/components/icons";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -74,11 +75,9 @@ export default function Page() {
           <div className="flex h-16 items-center justify-between">
             <h2 className="text-xl font-semibold">{journal.title}</h2>
           </div>
-          <textarea
-            defaultValue={journal.content ?? ""}
-            className="w-full flex-1 resize-none bg-transparent focus:outline-none"
-            placeholder="Start writing..."
-            onChange={(e) => handleContentChange(journal.id, e.target.value)}
+          <Editor
+            markdown={journal.content ?? ""}
+            onVlaueChange={(value) => handleContentChange(journal.id, value)}
           />
         </div>
       ))}
