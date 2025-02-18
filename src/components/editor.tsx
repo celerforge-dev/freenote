@@ -3,6 +3,8 @@
 import {
   MDXEditor,
   MDXEditorProps,
+  codeBlockPlugin,
+  codeMirrorPlugin,
   headingsPlugin,
   listsPlugin,
   markdownShortcutPlugin,
@@ -23,13 +25,30 @@ const Editor: FC<EditorProps> = ({ onVlaueChange, ...props }: EditorProps) => {
   return (
     <MDXEditor
       onChange={onVlaueChange}
-      contentEditableClassName="prose"
-      className="prose prose-stone"
+      contentEditableClassName="prose prose-stone !p-0"
       {...props}
       plugins={[
         headingsPlugin({}),
         listsPlugin(),
         tablePlugin(),
+        codeBlockPlugin({
+          defaultCodeBlockLanguage: "js",
+        }),
+        codeMirrorPlugin({
+          codeBlockLanguages: {
+            js: "JavaScript",
+            css: "CSS",
+            ts: "TypeScript",
+            html: "HTML",
+            python: "Python",
+            bash: "Bash",
+            json: "JSON",
+            yaml: "YAML",
+            markdown: "Markdown",
+            sql: "SQL",
+            xml: "XML",
+          },
+        }),
         markdownShortcutPlugin(),
       ]}
     />

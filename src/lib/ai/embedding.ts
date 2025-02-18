@@ -1,12 +1,19 @@
-import { openai } from "@ai-sdk/openai";
+import { settings } from "@/lib/settings";
+import { createOpenAI } from "@ai-sdk/openai";
 import { embedMany } from "ai";
 
-const embeddingModel = openai.embedding("text-embedding-ada-002");
+const getProvider = () => {
+  const provider = createOpenAI({
+    baseURL: settings.base_url,
+    apiKey: settings.api_key,
+  });
+  return provider;
+};
 
 const generateChunks = (input: string): string[] => {
   return input
     .trim()
-    .split(".")
+    .split("\n\n")
     .filter((i) => i !== "");
 };
 
@@ -14,8 +21,12 @@ export const generateEmbeddings = async (
   value: string,
 ): Promise<Array<{ embedding: number[]; content: string }>> => {
   const chunks = generateChunks(value);
+  const provider = getProvider();
+  if (!provider) {
+    throw new Error("No provider found.");
+  }
   const { embeddings } = await embedMany({
-    model: embeddingModel,
+    model: provider.embedding("text-embedding-ada-002"),
     values: chunks,
   });
   return embeddings.map((e, i) => ({ content: chunks[i], embedding: e }));
