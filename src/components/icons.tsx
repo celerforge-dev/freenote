@@ -2,11 +2,14 @@ import {
   ArrowUp,
   BookOpenText,
   BotMessageSquare,
+  ChevronRight,
+  CircleArrowUp,
   Loader,
   LucideIcon,
   NotebookPen,
   NotebookText,
   Sparkles,
+  StopCircle,
 } from "lucide-react";
 
 export const Icons = {
@@ -17,4 +20,7 @@ export const Icons = {
   bookOpenText: BookOpenText,
   arrowUp: ArrowUp,
   loader: Loader,
+  chevronRight: ChevronRight,
+  circleArrowUp: CircleArrowUp,
+  stopCircle: StopCircle,
 } satisfies Record<string, LucideIcon>;
