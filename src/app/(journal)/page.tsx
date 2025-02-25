@@ -77,7 +77,8 @@ export default function Page() {
           </div>
           <Editor
             markdown={journal.content ?? ""}
-            onVlaueChange={(value) => handleContentChange(journal.id, value)}
+            placeholder="Start typing..."
+            onValueChange={(value) => handleContentChange(journal.id, value)}
           />
         </div>
       ))}

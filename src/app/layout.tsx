@@ -5,7 +5,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
+import { SettingsProvider } from "@/context/settings";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -18,23 +20,29 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+  modal,
+}: {
   children: React.ReactNode;
-}>) {
+  modal: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body
         className={cn("bg-background font-sans antialiased", fontSans.variable)}
       >
-        <SidebarProvider>
-          <AppSidebar />
-          <SidebarInset>
-            <header className="flex h-16 items-center border-b px-2">
-              <SidebarTrigger />
-            </header>
-            <main>{children}</main>
-          </SidebarInset>
-        </SidebarProvider>
+        <SettingsProvider>
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+              <header className="flex h-16 items-center border-b px-2">
+                <SidebarTrigger />
+              </header>
+              <main>{children}</main>
+            </SidebarInset>
+          </SidebarProvider>
+          {modal}
+        </SettingsProvider>
+        <Toaster richColors />
       </body>
     </html>
   );

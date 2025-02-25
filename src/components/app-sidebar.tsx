@@ -98,6 +98,18 @@ export function AppSidebar() {
             </Collapsible>
           </SidebarMenu>
         </SidebarGroup>
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname === "/settings"}>
+                <Link href="/settings">
+                  <Icons.settings />
+                  <span>Settings</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter />
     </Sidebar>

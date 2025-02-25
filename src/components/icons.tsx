@@ -8,6 +8,7 @@ import {
   LucideIcon,
   NotebookPen,
   NotebookText,
+  Settings,
   Sparkles,
   StopCircle,
 } from "lucide-react";
@@ -23,4 +24,5 @@ export const Icons = {
   chevronRight: ChevronRight,
   circleArrowUp: CircleArrowUp,
   stopCircle: StopCircle,
+  settings: Settings,
 } satisfies Record<string, LucideIcon>;
