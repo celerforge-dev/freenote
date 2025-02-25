@@ -1,6 +1,6 @@
 "use client";
 
-import SettingsModal from "@/components/settings/SettingsModal";
+import SettingsModal from "@/components/settings-modal";
 import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
