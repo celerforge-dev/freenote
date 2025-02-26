@@ -8,6 +8,7 @@ import {
   LucideIcon,
   NotebookPen,
   NotebookText,
+  RefreshCw,
   Settings,
   Sparkles,
   StopCircle,
@@ -25,4 +26,5 @@ export const Icons = {
   circleArrowUp: CircleArrowUp,
   stopCircle: StopCircle,
   settings: Settings,
+  refreshCw: RefreshCw,
 } satisfies Record<string, LucideIcon>;
