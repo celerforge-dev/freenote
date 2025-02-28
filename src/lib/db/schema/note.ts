@@ -10,6 +10,5 @@ export type Note = {
   content: string;
   createdAt: Date;
   updatedAt: Date | null;
-  embedding: number[];
   embeddingUpdatedAt: Date | null;
 };

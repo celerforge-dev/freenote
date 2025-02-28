@@ -1,11 +1,12 @@
-import { settings } from "@/lib/settings";
+"use server";
+
 import { createOpenAI } from "@ai-sdk/openai";
 import { embedMany } from "ai";
 
-const getProvider = () => {
+const getProvider = (baseUrl: string, apiKey: string) => {
   const provider = createOpenAI({
-    baseURL: settings.base_url,
-    apiKey: settings.api_key,
+    baseURL: baseUrl,
+    apiKey: apiKey,
   });
   return provider;
 };
@@ -19,9 +20,11 @@ const generateChunks = (input: string): string[] => {
 
 export const generateEmbeddings = async (
   value: string,
+  baseUrl: string,
+  apiKey: string,
 ): Promise<Array<{ embedding: number[]; content: string }>> => {
   const chunks = generateChunks(value);
-  const provider = getProvider();
+  const provider = getProvider(baseUrl, apiKey);
   if (!provider) {
     throw new Error("No provider found.");
   }
