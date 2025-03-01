@@ -11,8 +11,16 @@ interface Message {
 }
 
 export default function Page() {
-  const { messages, input, handleInputChange, handleSubmit, status, stop } =
-    useChat({ maxSteps: 3 });
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    status,
+    stop,
+    error,
+    reload,
+  } = useChat({ maxSteps: 3 });
 
   return (
     <div className="container flex h-[calc(100vh-64px)] max-w-3xl flex-col gap-4 py-6">
@@ -36,6 +44,14 @@ export default function Page() {
           ))}
         </div>
       </div>
+      {error && (
+        <>
+          <div>An error occurred.</div>
+          <button type="button" onClick={() => reload()}>
+            Retry
+          </button>
+        </>
+      )}
       <div className="sticky bottom-6">
         <ChatInput
           input={input}
