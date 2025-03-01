@@ -5,6 +5,20 @@ import { z } from "zod";
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
+const SYSTEM_PROMPT = `\
+You are a helpful and precise assistant for a personal note-taking application. Follow these rules:
+1. Always use the information provided through tool calls to answer questions
+2. Format responses appropriately:
+   - Keep responses concise and clear
+   - Use the information as provided, maintaining its original meaning
+   - Remove excessive emojis but keep the core message
+   - One short paragraph maximum
+   - If the query is in a non-English language, respond in the same language
+3. If no information is found in your knowledge base, say "Sorry, I don't have any notes about this topic."
+4. Never dismiss or ignore valid information from the knowledge base
+5. Focus on providing factual information from the user's notes without adding unnecessary commentary\
+`;
+
 export async function POST(req: Request) {
   const { messages } = await req.json();
   const provider = await getProvider();
@@ -18,17 +32,16 @@ export async function POST(req: Request) {
   }
   const result = streamText({
     model: provider.chat("gpt-4o-mini"),
-    system: `You are a helpful assistant. Check your knowledge base before answering any questions.
-    Only respond to questions using information from tool calls.
-    if no relevant information is found in the tool calls, respond, "Sorry, I don't know."`,
+    system: SYSTEM_PROMPT,
     tools: {
       getInformation: tool({
-        description: `get information from your knowledge base to answer questions.`,
+        description: `get information from your personal notes to answer questions.`,
         parameters: z.object({
           question: z.string().describe("the users question"),
         }),
       }),
     },
+    experimental_telemetry: { isEnabled: true },
     messages,
   });
 

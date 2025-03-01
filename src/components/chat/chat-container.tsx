@@ -70,7 +70,10 @@ export function ChatContainer({
           (toolCall.args as { question: string }).question,
         );
         const embeddings = await findSimilarContent(queryEmbedding);
-        return embeddings;
+        return {
+          relevantInformation: embeddings.map((e) => e.content).join("\n\n"),
+          sourcesCount: embeddings.length,
+        };
       }
     },
   });
