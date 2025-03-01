@@ -7,10 +7,10 @@ import {
 } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
-import { SettingsProvider } from "@/context/settings";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
+import { CookiesProvider } from "next-client-cookies/server";
 
 export const metadata: Metadata = {
   title: siteConfig.title,
@@ -30,7 +30,7 @@ export default function RootLayout({
       <body
         className={cn("bg-background font-sans antialiased", fontSans.variable)}
       >
-        <SettingsProvider>
+        <CookiesProvider>
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
@@ -41,8 +41,8 @@ export default function RootLayout({
             </SidebarInset>
           </SidebarProvider>
           {modal}
-        </SettingsProvider>
-        <Toaster richColors />
+          <Toaster richColors />
+        </CookiesProvider>
       </body>
     </html>
   );

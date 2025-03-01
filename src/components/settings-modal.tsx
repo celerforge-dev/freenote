@@ -21,11 +21,12 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
-import { useSettings } from "@/context/settings";
 import { generateEmbeddings } from "@/lib/ai/embedding";
 import { db } from "@/lib/db";
+import { SETTINGS } from "@/lib/settings";
+import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 type SettingsTab = "provider" | "embeddings";
@@ -38,25 +39,19 @@ export default function SettingsModal({
   onClose: () => void;
 }) {
   const router = useRouter();
-  const { settings, updateSettings } = useSettings();
-  const [baseUrl, setBaseUrl] = useState("");
-  const [apiKey, setApiKey] = useState("");
+  const cookies = useCookies();
+  const [baseUrl, setBaseUrl] = useState(
+    cookies.get(SETTINGS.ai.provider.baseUrl) ?? "",
+  );
+  const [apiKey, setApiKey] = useState(
+    cookies.get(SETTINGS.ai.provider.apiKey) ?? "",
+  );
   const [activeTab, setActiveTab] = useState<SettingsTab>("provider");
   const [isSyncing, setIsSyncing] = useState(false);
 
-  useEffect(() => {
-    if (settings) {
-      setBaseUrl(settings.baseUrl || "");
-      setApiKey(settings.apiKey || "");
-    }
-  }, [settings]);
-
   const handleSave = () => {
-    updateSettings({
-      ...settings,
-      baseUrl,
-      apiKey,
-    });
+    cookies.set(SETTINGS.ai.provider.baseUrl, baseUrl);
+    cookies.set(SETTINGS.ai.provider.apiKey, apiKey);
     onClose();
     router.refresh();
     toast.success("Settings saved.", {
@@ -87,11 +82,7 @@ export default function SettingsModal({
 
       // Process each note that needs updating
       for (const note of notesToUpdate) {
-        const embedding = await generateEmbeddings(
-          note.content,
-          settings.baseUrl,
-          settings.apiKey,
-        );
+        const embedding = await generateEmbeddings(note.content);
         await db.transaction("rw", db.notes, db.embeddings, async () => {
           await db.embeddings.where("noteId").equals(note.id).delete();
           await db.embeddings.bulkAdd(
