@@ -6,7 +6,6 @@ function createJournalEntry(date: Date): Omit<Note, "id"> {
     type: NoteType.Journal,
     title: date.toLocaleDateString(),
     content: "",
-    embedding: [],
     createdAt: date,
     updatedAt: null,
     embeddingUpdatedAt: null,

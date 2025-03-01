@@ -1,7 +1,7 @@
 "use server";
 
 import { getProvider } from "@/lib/ai/provder";
-import { embedMany } from "ai";
+import { embed, embedMany } from "ai";
 const generateChunks = (input: string): string[] => {
   return input
     .trim()
@@ -12,7 +12,8 @@ const generateChunks = (input: string): string[] => {
 export const generateEmbeddings = async (
   value: string,
 ): Promise<Array<{ embedding: number[]; content: string }>> => {
-  const chunks = generateChunks(value);
+  const input = value.replaceAll("\\n", " ");
+  const chunks = generateChunks(input);
   const provider = await getProvider();
   if (!provider) {
     throw new Error("No provider found. Please set API credentials first.");
@@ -22,4 +23,17 @@ export const generateEmbeddings = async (
     values: chunks,
   });
   return embeddings.map((e, i) => ({ content: chunks[i], embedding: e }));
+};
+
+export const generateEmbedding = async (value: string): Promise<number[]> => {
+  const provider = await getProvider();
+  if (!provider) {
+    throw new Error("No provider found. Please set API credentials first.");
+  }
+  const input = value.replaceAll("\\n", " ");
+  const { embedding } = await embed({
+    model: provider.embedding("text-embedding-ada-002"),
+    value: input,
+  });
+  return embedding;
 };
