@@ -102,7 +102,7 @@ export function AppSidebar() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={pathname === "/settings"}>
-                <Link href="/settings">
+                <Link href="/settings" scroll={false}>
                   <Icons.settings />
                   <span>Settings</span>
                 </Link>

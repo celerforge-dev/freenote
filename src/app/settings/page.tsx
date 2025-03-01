@@ -7,7 +7,7 @@ export default function SettingsPage() {
   const router = useRouter();
 
   const handleClose = () => {
-    router.push("/");
+    router.push("/", { scroll: false });
   };
 
   return <SettingsModal isOpen={true} onClose={handleClose} />;
