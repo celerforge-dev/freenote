@@ -34,8 +34,8 @@ export async function POST(req: Request) {
     model: provider.chat("gpt-4o-mini"),
     system: SYSTEM_PROMPT,
     tools: {
-      getInformation: tool({
-        description: `get information from your personal notes to answer questions.`,
+      retrieveNote: tool({
+        description: `retrieve information from your personal notes to answer questions.`,
         parameters: z.object({
           question: z.string().describe("the users question"),
         }),

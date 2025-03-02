@@ -1,16 +1,11 @@
 "use client";
 
+import { Messages } from "@/components/chat/messages";
 import { generateEmbedding } from "@/lib/ai/embedding";
 import { db } from "@/lib/db";
 import { useChat } from "@ai-sdk/react";
+import type { Message } from "ai";
 import { ChatInput } from "./chat-input";
-
-interface Message {
-  id: string;
-  role: string;
-  content: string;
-  toolInvocations?: Array<{ toolName: string }>;
-}
 
 export function euclideanDistance(A: number[], B: number[]): number {
   return Math.sqrt(A.reduce((sum, a, i) => sum + Math.pow(a - B[i], 2), 0));
@@ -62,10 +57,11 @@ export function ChatContainer({
     stop,
     error,
     reload,
+    isLoading,
   } = useChat({
     maxSteps: 3,
     async onToolCall({ toolCall }) {
-      if (toolCall.toolName === "getInformation") {
+      if (toolCall.toolName === "retrieveNote") {
         const queryEmbedding = await generateEmbedding(
           (toolCall.args as { question: string }).question,
         );
@@ -87,7 +83,7 @@ export function ChatContainer({
     >
       <div className="flex-1 overflow-auto">
         <div className="space-y-4">
-          {messages.map((m: Message) => (
+          {/* {messages.map((m: Message) => (
             <div key={m.id} className="whitespace-pre-wrap">
               <div>
                 <div className="font-bold">{m.role}</div>
@@ -102,7 +98,8 @@ export function ChatContainer({
                 </p>
               </div>
             </div>
-          ))}
+          ))} */}
+          <Messages messages={messages as Message[]} isLoading={isLoading} />
         </div>
       </div>
       {error && (
