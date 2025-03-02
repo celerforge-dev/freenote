@@ -66,3 +66,7 @@ export async function insertChatMessage(message: Omit<ChatMessage, "id">) {
     ...message,
   });
 }
+
+export async function getAllChats(): Promise<Chat[]> {
+  return await db.chats.orderBy("updatedAt").reverse().toArray();
+}

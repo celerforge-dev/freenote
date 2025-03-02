@@ -15,7 +15,7 @@ class FreeNoteDB extends Dexie {
     this.version(1).stores({
       notes: "++id, title, type, createdAt, updatedAt, embeddingUpdatedAt",
       embeddings: "++id, noteId, content, embedding",
-      chats: "++id, title",
+      chats: "++id, title, updatedAt, createdAt",
       chatMessages: "++id, chatId",
     });
   }

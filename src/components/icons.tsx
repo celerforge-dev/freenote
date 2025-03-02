@@ -4,6 +4,7 @@ import {
   BotMessageSquare,
   ChevronRight,
   CircleArrowUp,
+  CirclePlus,
   Loader,
   LucideIcon,
   NotebookPen,
@@ -27,4 +28,5 @@ export const Icons = {
   stopCircle: StopCircle,
   settings: Settings,
   refreshCw: RefreshCw,
+  circlePlus: CirclePlus,
 } satisfies Record<string, LucideIcon>;

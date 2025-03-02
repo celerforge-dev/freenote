@@ -21,11 +21,32 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { getAllChats } from "@/lib/chat";
+import { Chat } from "@/lib/db";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadChats() {
+      try {
+        const chatList = await getAllChats();
+        setChats(chatList);
+      } catch (error) {
+        console.error("Failed to load chats:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadChats();
+  }, [pathname]);
+
   return (
     <Sidebar>
       <SidebarHeader className="px-4 pt-4">
@@ -58,7 +79,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>AI</SidebarGroupLabel>
           <SidebarMenu>
-            <Collapsible className="group/collapsible">
+            <Collapsible className="group/collapsible" defaultOpen>
               <SidebarMenuItem>
                 <SidebarMenuButton
                   isActive={pathname === "/chat"}
@@ -70,28 +91,50 @@ export function AppSidebar() {
                       <Icons.chevronRight className="-ml-1 hidden h-5 w-5 rounded transition-transform duration-200 hover:bg-neutral-200 group-hover/chat:block group-data-[state=open]/collapsible:rotate-90" />
                     </CollapsibleTrigger>
                   </div>
-                  <Link href="/chat" className="flex-1">
+                  <Link
+                    href="/chat"
+                    className="flex flex-1 items-center justify-between"
+                  >
                     Chat
+                    <Icons.circlePlus className="hidden h-4 w-4 group-hover/chat:block" />
                   </Link>
                 </SidebarMenuButton>
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    <SidebarMenuSubItem>
+                    {isLoading ? (
+                      <SidebarMenuSubItem>
+                        <div className="px-4 py-2 text-sm text-muted-foreground">
+                          Loading chats...
+                        </div>
+                      </SidebarMenuSubItem>
+                    ) : chats.length === 0 ? (
+                      <SidebarMenuSubItem>
+                        <div className="px-4 py-2 text-sm text-muted-foreground">
+                          No chats yet
+                        </div>
+                      </SidebarMenuSubItem>
+                    ) : (
+                      chats.map((chat) => (
+                        <SidebarMenuSubItem key={chat.id}>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={pathname === `/chat/${chat.id}`}
+                          >
+                            <Link href={`/chat/${chat.id}`}>
+                              <span>{chat.title}</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))
+                    )}
+                    {/* Original example item */}
+                    {/* <SidebarMenuSubItem>
                       <SidebarMenuSubButton asChild>
                         <Link href="/chat/history1">
                           <span>history1</span>
                         </Link>
                       </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                    {/* {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))} */}
+                    </SidebarMenuSubItem> */}
                   </SidebarMenuSub>
                 </CollapsibleContent>
               </SidebarMenuItem>
