@@ -1,8 +1,10 @@
 "use client";
 
 import { ChatContainer } from "@/components/chat/chat-container";
+import { ChatContainerSkeleton } from "@/components/chat/skeletons";
 import { ChatWithMessages, getChat } from "@/lib/chat";
 import { use, useEffect, useState } from "react";
+
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [chat, setChat] = useState<ChatWithMessages | null>(null);
@@ -19,7 +21,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }, [id]);
 
   if (!chat) {
-    return <div>Loading...</div>;
+    return <ChatContainerSkeleton />;
   }
+
   return <ChatContainer chat={chat} />;
 }

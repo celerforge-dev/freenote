@@ -19,7 +19,7 @@ export async function createChat(): Promise<string> {
 export async function getChat(id: string): Promise<ChatWithMessages | null> {
   const chat = await db.chats.get(id);
   if (!chat) {
-    throw new Error("Chat not found.");
+    return null;
   }
   const messages = await db.chatMessages.where("chatId").equals(id).toArray();
   return { ...chat, messages };

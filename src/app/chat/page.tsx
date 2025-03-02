@@ -1,5 +1,6 @@
 "use client";
 
+import { NewChatSkeleton } from "@/components/chat/skeletons";
 import { createChat } from "@/lib/chat";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -16,5 +17,5 @@ export default function Page() {
     create();
   }, [router]);
 
-  return <div>Creating new chat...</div>;
+  return <NewChatSkeleton />;
 }
