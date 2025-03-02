@@ -2,7 +2,12 @@
 
 import { Messages } from "@/components/chat/messages";
 import { generateEmbedding } from "@/lib/ai/embedding";
-import { ChatWithMessages, insertChatMessage } from "@/lib/chat";
+import {
+  ChatWithMessages,
+  generateChatTitle,
+  insertChatMessage,
+  updateChat,
+} from "@/lib/chat";
 import { db } from "@/lib/db";
 import { useChat } from "@ai-sdk/react";
 import type { Message } from "ai";
@@ -98,6 +103,19 @@ export function ChatContainer({
         role: "user",
         chatId: chat.id,
       });
+
+      // If this is the first user message and the chat title is "New Chat", generate a title
+      if (messages.length === 0 && chat.title === "New Chat") {
+        try {
+          const generatedTitle = generateChatTitle(input);
+          await updateChat(chat.id, {
+            title: generatedTitle,
+            updatedAt: new Date(),
+          });
+        } catch (error) {
+          console.error("Failed to generate chat title:", error);
+        }
+      }
     }
     handleSubmit();
   };
