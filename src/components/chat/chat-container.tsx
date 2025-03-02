@@ -2,6 +2,7 @@
 
 import { Messages } from "@/components/chat/messages";
 import { generateEmbedding } from "@/lib/ai/embedding";
+import { ChatWithMessages, insertChatMessage } from "@/lib/chat";
 import { db } from "@/lib/db";
 import { useChat } from "@ai-sdk/react";
 import type { Message } from "ai";
@@ -42,11 +43,13 @@ async function findSimilarContent(queryEmbedding: number[], limit = 4) {
 interface ChatContainerProps {
   className?: string;
   containerClassName?: string;
+  chat: ChatWithMessages;
 }
 
 export function ChatContainer({
   className,
   containerClassName,
+  chat,
 }: ChatContainerProps) {
   const {
     messages,
@@ -60,6 +63,9 @@ export function ChatContainer({
     isLoading,
   } = useChat({
     maxSteps: 3,
+    initialMessages: chat.messages,
+    id: chat.id,
+    sendExtraMessageFields: true,
     async onToolCall({ toolCall }) {
       if (toolCall.toolName === "retrieveNote") {
         const queryEmbedding = await generateEmbedding(
@@ -72,7 +78,29 @@ export function ChatContainer({
         };
       }
     },
+    onFinish: async (message) => {
+      if (message.role === "assistant" && message.content) {
+        await insertChatMessage({
+          content: message.content,
+          createdAt: new Date(),
+          role: message.role as "assistant",
+          chatId: chat.id,
+        });
+      }
+    },
   });
+
+  const handleSubmitWithSave = async () => {
+    if (input.trim()) {
+      await insertChatMessage({
+        content: input,
+        createdAt: new Date(),
+        role: "user",
+        chatId: chat.id,
+      });
+    }
+    handleSubmit();
+  };
 
   return (
     <div
@@ -83,22 +111,6 @@ export function ChatContainer({
     >
       <div className="flex-1 overflow-auto">
         <div className="space-y-4">
-          {/* {messages.map((m: Message) => (
-            <div key={m.id} className="whitespace-pre-wrap">
-              <div>
-                <div className="font-bold">{m.role}</div>
-                <p>
-                  {m.content.length > 0 ? (
-                    m.content
-                  ) : (
-                    <span className="font-light italic">
-                      {"calling tool: " + m?.toolInvocations?.[0].toolName}
-                    </span>
-                  )}
-                </p>
-              </div>
-            </div>
-          ))} */}
           <Messages messages={messages as Message[]} isLoading={isLoading} />
         </div>
       </div>
@@ -116,7 +128,7 @@ export function ChatContainer({
           input={input}
           disabled={status !== "ready"}
           handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
+          handleSubmit={handleSubmitWithSave}
           onStop={
             status === "submitted" || status === "streaming" ? stop : undefined
           }
