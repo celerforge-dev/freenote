@@ -3,10 +3,27 @@
 import { Icons } from "@/components/icons";
 import { Logo } from "@/components/logo";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -23,11 +40,17 @@ import {
 } from "@/components/ui/sidebar";
 import { useChatStore } from "@/contexts/chat-store";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { chats, isLoading } = useChatStore();
+  const router = useRouter();
+  const { chats, isLoading, deleteChat } = useChatStore();
+
+  const handleDelete = async (chatId: string) => {
+    await deleteChat(chatId);
+    router.push("/chat");
+  };
 
   return (
     <Sidebar>
@@ -98,14 +121,47 @@ export function AppSidebar() {
                     ) : (
                       chats.map((chat) => (
                         <SidebarMenuSubItem key={chat.id}>
-                          <SidebarMenuSubButton
-                            asChild
-                            isActive={pathname === `/chat/${chat.id}`}
-                          >
-                            <Link href={`/chat/${chat.id}`}>
-                              <span>{chat.title}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
+                          <AlertDialog>
+                            <ContextMenu>
+                              <ContextMenuTrigger>
+                                <SidebarMenuSubButton
+                                  asChild
+                                  isActive={pathname === `/chat/${chat.id}`}
+                                >
+                                  <Link href={`/chat/${chat.id}`}>
+                                    <span>{chat.title}</span>
+                                  </Link>
+                                </SidebarMenuSubButton>
+                              </ContextMenuTrigger>
+                              <ContextMenuContent>
+                                <ContextMenuItem>
+                                  <AlertDialogTrigger className="w-full text-left text-destructive">
+                                    Delete Chat
+                                  </AlertDialogTrigger>
+                                </ContextMenuItem>
+                              </ContextMenuContent>
+                            </ContextMenu>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Are you sure?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will
+                                  permanently delete this chat and all its
+                                  messages.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDelete(chat.id)}
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </SidebarMenuSubItem>
                       ))
                     )}

@@ -65,7 +65,7 @@ export function NewChatSkeleton({ className }: SkeletonProps) {
   return (
     <div
       className={cn(
-        "flex h-[70vh] max-w-3xl flex-col items-center justify-center space-y-4 px-4",
+        "container flex h-[70vh] max-w-3xl flex-col items-center justify-center space-y-4 px-4",
         className,
       )}
     >
