@@ -2,7 +2,7 @@
 
 import { ChatContainer } from "@/components/chat/chat-container";
 import { ChatContainerSkeleton } from "@/components/chat/skeletons";
-import { ChatWithMessages, getChat } from "@/lib/chat";
+import { ChatWithMessages, useChatStore } from "@/contexts/chat-store";
 import { use, useEffect, useState } from "react";
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -10,6 +10,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [chat, setChat] = useState<ChatWithMessages | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const { getChat } = useChatStore();
 
   useEffect(() => {
     async function fetchChat() {

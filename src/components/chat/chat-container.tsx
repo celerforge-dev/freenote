@@ -1,13 +1,9 @@
 "use client";
 
 import { Messages } from "@/components/chat/messages";
+import { ChatWithMessages, useChatStore } from "@/contexts/chat-store";
 import { generateEmbedding } from "@/lib/ai/embedding";
-import {
-  ChatWithMessages,
-  generateChatTitle,
-  insertChatMessage,
-  updateChat,
-} from "@/lib/chat";
+import { generateChatTitle } from "@/lib/chat";
 import { db } from "@/lib/db";
 import { useChat } from "@ai-sdk/react";
 import type { Message } from "ai";
@@ -60,7 +56,7 @@ export function ChatContainer({
     messages,
     input,
     handleInputChange,
-    handleSubmit,
+    handleSubmit: handleChatSubmit,
     status,
     stop,
     error,
@@ -95,29 +91,35 @@ export function ChatContainer({
     },
   });
 
-  const handleSubmitWithSave = async () => {
-    if (input.trim()) {
-      await insertChatMessage({
-        content: input,
-        createdAt: new Date(),
-        role: "user",
-        chatId: chat.id,
-      });
+  const { updateChat, insertChatMessage } = useChatStore();
 
-      // If this is the first user message and the chat title is "New Chat", generate a title
-      if (messages.length === 0 && chat.title === "New Chat") {
-        try {
-          const generatedTitle = generateChatTitle(input);
-          await updateChat(chat.id, {
-            title: generatedTitle,
-            updatedAt: new Date(),
-          });
-        } catch (error) {
-          console.error("Failed to generate chat title:", error);
-        }
+  const handleSaveMessage = async () => {
+    await insertChatMessage({
+      content: input,
+      createdAt: new Date(),
+      role: "user",
+      chatId: chat.id,
+    });
+
+    // If this is the first user message and the chat title is "New Chat", generate a title
+    if (messages.length === 0 && chat.title === "New Chat") {
+      try {
+        const generatedTitle = generateChatTitle(input);
+        await updateChat(chat.id, {
+          title: generatedTitle,
+          updatedAt: new Date(),
+        });
+      } catch (error) {
+        console.error("Failed to generate chat title:", error);
       }
     }
-    handleSubmit();
+  };
+
+  const handleSubmitWithSave = async () => {
+    if (input.trim()) {
+      await handleSaveMessage();
+      await handleChatSubmit({ preventDefault: () => {} });
+    }
   };
 
   return (

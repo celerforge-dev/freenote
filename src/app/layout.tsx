@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
+import { ChatStoreProvider } from "@/contexts/chat-store";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -31,17 +32,19 @@ export default function RootLayout({
         className={cn("bg-background font-sans antialiased", fontSans.variable)}
       >
         <CookiesProvider>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <header className="flex h-16 items-center border-b px-2">
-                <SidebarTrigger />
-              </header>
-              <main>{children}</main>
-            </SidebarInset>
-          </SidebarProvider>
-          {modal}
-          <Toaster richColors />
+          <ChatStoreProvider>
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset>
+                <header className="flex h-16 items-center border-b px-2">
+                  <SidebarTrigger />
+                </header>
+                <main>{children}</main>
+              </SidebarInset>
+            </SidebarProvider>
+            {modal}
+            <Toaster richColors />
+          </ChatStoreProvider>
         </CookiesProvider>
       </body>
     </html>

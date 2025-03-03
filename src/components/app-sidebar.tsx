@@ -21,31 +21,13 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { getAllChats } from "@/lib/chat";
-import { Chat } from "@/lib/db";
+import { useChatStore } from "@/contexts/chat-store";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadChats() {
-      try {
-        const chatList = await getAllChats();
-        setChats(chatList);
-      } catch (error) {
-        console.error("Failed to load chats:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadChats();
-  }, [pathname]);
+  const { chats, isLoading } = useChatStore();
 
   return (
     <Sidebar>
