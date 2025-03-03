@@ -65,7 +65,7 @@ export function AppSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-          {/* <SidebarMenu>
+          <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={pathname === "/knowledge"}>
                 <Link href="/knowledge">
@@ -74,7 +74,7 @@ export function AppSidebar() {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-          </SidebarMenu> */}
+          </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>AI</SidebarGroupLabel>
@@ -127,14 +127,6 @@ export function AppSidebar() {
                         </SidebarMenuSubItem>
                       ))
                     )}
-                    {/* Original example item */}
-                    {/* <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild>
-                        <Link href="/chat/history1">
-                          <span>history1</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem> */}
                   </SidebarMenuSub>
                 </CollapsibleContent>
               </SidebarMenuItem>
