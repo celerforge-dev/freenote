@@ -19,7 +19,5 @@ export const env = createEnv({
    *
    * 💡 You'll get type errors if not all variables from `server` & `client` are included here.
    */
-  runtimeEnv: {
-    DATABASE_URL: process.env.DATABASE_URL,
-  },
+  runtimeEnv: {},
 });
