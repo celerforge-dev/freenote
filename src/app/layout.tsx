@@ -10,6 +10,7 @@ import { siteConfig } from "@/config/site";
 import { ChatStoreProvider } from "@/contexts/chat-store";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { CookiesProvider } from "next-client-cookies/server";
 
@@ -46,6 +47,7 @@ export default function RootLayout({
             <Toaster richColors />
           </ChatStoreProvider>
         </CookiesProvider>
+        <Analytics />
       </body>
     </html>
   );
