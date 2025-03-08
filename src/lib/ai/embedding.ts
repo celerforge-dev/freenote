@@ -31,7 +31,7 @@ export const generateEmbeddings = async (
   });
 
   return embeddings.map((e, i) => ({
-    content: chunks[i],
+    content: chunksWithContext[i],
     embedding: e,
   }));
 };

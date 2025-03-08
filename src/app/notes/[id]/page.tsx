@@ -13,9 +13,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { generateEmbeddings } from "@/lib/ai/embedding";
 import { db, Note, NoteType } from "@/lib/db";
+import { SETTINGS } from "@/lib/settings";
 import { useDebounce } from "@uidotdev/usehooks";
 import { ArrowLeft } from "lucide-react";
+import { useCookies } from "next-client-cookies";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useCallback, useEffect, useState } from "react";
@@ -29,6 +32,11 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const [title, setTitle] = useState("");
   const debouncedContent = useDebounce(content, 1000);
   const debouncedTitle = useDebounce(title, 1000);
+  const cookies = useCookies();
+  const [autoUpdate] = useState(
+    cookies.get(SETTINGS.ai.embeddings.autoUpdate) !== "false" &&
+      cookies.get(SETTINGS.ai.provider.apiKey) !== undefined,
+  );
 
   const loadNote = useCallback(async () => {
     try {
@@ -58,16 +66,27 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           title,
           updatedAt: new Date(),
         });
-        setNote((prev) =>
-          prev ? { ...prev, content, title, updatedAt: new Date() } : null,
-        );
+        if (autoUpdate) {
+          await db.embeddings.where("noteId").equals(note.id).delete();
+          const embedding = await generateEmbeddings(content, title);
+          await db.embeddings.bulkAdd(
+            embedding.map((embedding) => ({
+              noteId: note.id,
+              content: embedding.content,
+              embedding: embedding.embedding,
+            })),
+          );
+          await db.notes.update(note.id, {
+            embeddingUpdatedAt: new Date(),
+          });
+        }
       } catch (error) {
         console.error("Failed to update note:", error);
       }
     };
 
     updateNote();
-  }, [debouncedContent, debouncedTitle, note, content, title]);
+  }, [debouncedContent, debouncedTitle, note, content, title, autoUpdate]);
 
   const handleDelete = async () => {
     if (!note) return;
