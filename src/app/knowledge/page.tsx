@@ -2,14 +2,22 @@
 
 import { KnowledgeDialog } from "@/app/knowledge/knowledge-dialog";
 import { Input } from "@/components/ui/input";
+import { generateEmbeddings } from "@/lib/ai/embedding";
 import { db, Note, NoteType } from "@/lib/db";
+import { SETTINGS } from "@/lib/settings";
 import { Clock, Search } from "lucide-react";
+import { useCookies } from "next-client-cookies";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function KnowledgePage() {
   const [items, setItems] = useState<Note[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const cookies = useCookies();
+  const [autoUpdate] = useState(
+    cookies.get(SETTINGS.ai.embeddings.autoUpdate) !== "false" &&
+      cookies.get(SETTINGS.ai.provider.apiKey) !== undefined,
+  );
 
   useEffect(() => {
     loadItems();
@@ -50,13 +58,24 @@ export default function KnowledgePage() {
     data: Omit<Note, "id" | "createdAt" | "updatedAt" | "embeddingUpdatedAt">,
   ) => {
     const now = new Date();
-    await db.notes.add({
+    const noteId = await db.notes.add({
       ...data,
       type: NoteType.Knowledge,
       createdAt: now,
       updatedAt: null,
       embeddingUpdatedAt: null,
     });
+    if (autoUpdate) {
+      db.embeddings.where("noteId").equals(Number(noteId)).delete();
+      const embedding = await generateEmbeddings(data.content, data.title);
+      await db.embeddings.bulkAdd(
+        embedding.map((embedding) => ({
+          noteId: Number(noteId),
+          content: embedding.content,
+          embedding: embedding.embedding,
+        })),
+      );
+    }
     loadItems();
   };
 
