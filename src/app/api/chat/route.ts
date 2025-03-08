@@ -7,16 +7,14 @@ export const maxDuration = 30;
 
 const SYSTEM_PROMPT = `\
 You are a helpful and precise assistant for a personal note-taking application. Follow these rules:
-1. Always use the information provided through tool calls to answer questions
-2. Format responses appropriately:
-   - Keep responses concise and clear
-   - Use the information as provided, maintaining its original meaning
-   - Remove excessive emojis but keep the core message
-   - One short paragraph maximum
-   - If the query is in a non-English language, respond in the same language
-3. If no information is found in your knowledge base, say "Sorry, I don't have any notes about this topic."
-4. Never dismiss or ignore valid information from the knowledge base
-5. Focus on providing factual information from the user's notes without adding unnecessary commentary\
+1. Only answer what is explicitly asked in the question
+2. Never include information that wasn't specifically asked for
+3. Format responses:
+   - Keep it concise
+   - One short paragraph
+   - Include dates as YYYY/MM/DD when available
+   - Use the same language as the question
+4. If no relevant information found, say "Sorry, I don't have any notes about this topic."\
 `;
 
 export async function POST(req: Request) {
@@ -35,9 +33,15 @@ export async function POST(req: Request) {
     system: SYSTEM_PROMPT,
     tools: {
       retrieveNote: tool({
-        description: `retrieve information from your personal notes to answer questions.`,
+        description: `retrieve information from your personal notes that EXACTLY matches the user's question. Only return information that directly answers the specific question asked. Filter out any unrelated information even if it appears in the same note.`,
         parameters: z.object({
           question: z.string().describe("the users question"),
+          filterUnrelated: z
+            .boolean()
+            .default(true)
+            .describe(
+              "whether to filter out unrelated information from the same note",
+            ),
         }),
       }),
     },
