@@ -82,7 +82,7 @@ export default function SettingsModal({
 
       // Process each note that needs updating
       for (const note of notesToUpdate) {
-        const embedding = await generateEmbeddings(note.content);
+        const embedding = await generateEmbeddings(note.content, note.title);
         await db.transaction("rw", db.notes, db.embeddings, async () => {
           await db.embeddings.where("noteId").equals(note.id).delete();
           await db.embeddings.bulkAdd(

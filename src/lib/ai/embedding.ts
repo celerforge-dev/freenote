@@ -11,6 +11,7 @@ const generateChunks = (input: string): string[] => {
 
 export const generateEmbeddings = async (
   value: string,
+  context?: string,
 ): Promise<Array<{ embedding: number[]; content: string }>> => {
   const input = value.replaceAll("\\n", " ");
   const chunks = generateChunks(input);
@@ -18,11 +19,21 @@ export const generateEmbeddings = async (
   if (!provider) {
     throw new Error("No provider found. Please set API credentials first.");
   }
+
+  // Combine context with each chunk if context is provided
+  const chunksWithContext = chunks.map((chunk) =>
+    context ? `${context}\n${chunk}` : chunk,
+  );
+
   const { embeddings } = await embedMany({
     model: provider.embedding("text-embedding-ada-002"),
-    values: chunks,
+    values: chunksWithContext,
   });
-  return embeddings.map((e, i) => ({ content: chunks[i], embedding: e }));
+
+  return embeddings.map((e, i) => ({
+    content: chunks[i],
+    embedding: e,
+  }));
 };
 
 export const generateEmbedding = async (value: string): Promise<number[]> => {
