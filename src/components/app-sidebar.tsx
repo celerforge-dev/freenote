@@ -185,7 +185,28 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <div className="flex items-center gap-2 p-2">
+          <Link
+            href="https://github.com/celerforge/freenote"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-secondary-foreground transition-colors hover:text-sidebar-accent-foreground"
+            title="GitHub"
+          >
+            <Icons.github className="h-5 w-5" />
+          </Link>
+          <Link
+            href="https://github.com/celerforge/freenote/issues/new"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-secondary-foreground transition-colors hover:text-sidebar-accent-foreground"
+            title="FAQ & Help"
+          >
+            <Icons.circleHelp className="h-5 w-5" />
+          </Link>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }
