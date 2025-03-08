@@ -1,4 +1,5 @@
 import Editor from "@/components/editor";
+import { FormButton } from "@/components/form-button";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -126,9 +127,9 @@ export function KnowledgeDialog({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <FormButton type="submit" className="w-full">
               Create Entry
-            </Button>
+            </FormButton>
           </form>
         </Form>
       </DialogContent>
