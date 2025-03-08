@@ -47,7 +47,6 @@ export function useJournalUpdates() {
               );
               updates["embeddingUpdatedAt"] = updates.updatedAt;
             }
-            console.log("updates", updates);
             db.notes.update(Number(id), updates);
           }),
         );
