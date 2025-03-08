@@ -54,6 +54,10 @@ export default function SettingsModal({
     cookies.set(SETTINGS.ai.provider.apiKey, apiKey);
     onClose();
     router.refresh();
+
+    // Dispatch custom event to notify that settings have been updated
+    window.dispatchEvent(new Event("settings-updated"));
+
     toast.success("Settings saved.", {
       description: "Your settings have been successfully updated.",
     });
