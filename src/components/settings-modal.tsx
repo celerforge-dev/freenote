@@ -179,6 +179,18 @@ export default function SettingsModal({
                     <p className="mt-1 text-xs text-muted-foreground">
                       Your API key is stored locally and never shared.
                     </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      You can get your API key from{" "}
+                      <a
+                        href="https://platform.openai.com/api-keys"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        OpenAI&apos;s API Keys page
+                      </a>{" "}
+                      after creating an account.
+                    </p>
                   </div>
                   <div className="fixed bottom-0 right-0 flex items-center gap-4 p-4">
                     <Button variant="outline" onClick={onClose}>
