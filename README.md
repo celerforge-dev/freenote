@@ -43,6 +43,8 @@
     <a href="https://github.com/celerforge/freenote/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
     <a href="https://github.com/celerforge/freenote/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    &middot;
+    <a href="README.cn.md">中文文档</a>
   </p>
 </div>
 
