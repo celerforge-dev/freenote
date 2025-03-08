@@ -26,6 +26,7 @@
     "@radix-ui/react-popover": "^1.1.5",
     "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.1",
+    "@radix-ui/react-switch": "^1.1.3",
     "@radix-ui/react-tooltip": "^1.1.7",
     "@t3-oss/env-nextjs": "^0.12.0",
     "@uidotdev/usehooks": "^2.4.1",

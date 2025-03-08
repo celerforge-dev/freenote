@@ -1,15 +1,13 @@
 "use client";
 
-import { Icons } from "@/components/icons";
-import { Button } from "@/components/ui/button";
+import { EmbeddingsSettings } from "@/components/settings/embeddings-settings";
+import { ProviderSettings } from "@/components/settings/provider-settings";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Sidebar,
   SidebarContent,
@@ -46,12 +44,19 @@ export default function SettingsModal({
   const [apiKey, setApiKey] = useState(
     cookies.get(SETTINGS.ai.provider.apiKey) ?? "",
   );
+  const [autoUpdateEmbeddings, setAutoUpdateEmbeddings] = useState(
+    cookies.get(SETTINGS.ai.embeddings.autoUpdate) !== "false",
+  );
   const [activeTab, setActiveTab] = useState<SettingsTab>("provider");
   const [isSyncing, setIsSyncing] = useState(false);
 
   const handleSave = () => {
     cookies.set(SETTINGS.ai.provider.baseUrl, baseUrl);
     cookies.set(SETTINGS.ai.provider.apiKey, apiKey);
+    cookies.set(
+      SETTINGS.ai.embeddings.autoUpdate,
+      autoUpdateEmbeddings.toString(),
+    );
     onClose();
     router.refresh();
 
@@ -175,74 +180,22 @@ export default function SettingsModal({
             </div>
             <div className="relative flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0">
               {activeTab === "provider" && (
-                <div className="space-y-4 py-4">
-                  <h3 className="text-lg font-medium">LLM Provider</h3>
-                  <p className="mb-4 text-sm text-muted-foreground">
-                    Configure your OpenAI API settings to connect with the AI
-                    services.
-                  </p>
-                  <div className="grid gap-2">
-                    <Label htmlFor="baseUrl">API Base URL</Label>
-                    <Input
-                      id="baseUrl"
-                      value={baseUrl}
-                      onChange={(e) => setBaseUrl(e.target.value)}
-                      placeholder="https://api.openai.com/v1"
-                    />
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Default: https://api.openai.com/v1
-                    </p>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="apiKey">API Key</Label>
-                    <Input
-                      id="apiKey"
-                      type="password"
-                      value={apiKey}
-                      onChange={(e) => setApiKey(e.target.value)}
-                      placeholder="Enter your OpenAI API key"
-                    />
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Your API key is stored locally and never shared.
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      You can get your API key from{" "}
-                      <a
-                        href="https://platform.openai.com/api-keys"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        OpenAI&apos;s API Keys page
-                      </a>{" "}
-                      after creating an account.
-                    </p>
-                  </div>
-                  <div className="mt-8 flex items-center justify-end gap-4">
-                    <Button variant="outline" onClick={onClose}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleSave}>Save changes</Button>
-                  </div>
-                </div>
+                <ProviderSettings
+                  baseUrl={baseUrl}
+                  apiKey={apiKey}
+                  onBaseUrlChange={setBaseUrl}
+                  onApiKeyChange={setApiKey}
+                  onSave={handleSave}
+                  onCancel={onClose}
+                />
               )}
               {activeTab === "embeddings" && (
-                <div className="space-y-4 py-4">
-                  <h3 className="text-lg font-medium">Embeddings</h3>
-                  <div className="mb-4 text-sm text-muted-foreground">
-                    Manage your AI embeddings to ensure your model has access to
-                    the most up-to-date content. Regular synchronization
-                    improves response accuracy and relevance.
-                  </div>
-                  <div className="flex gap-2">
-                    <Button onClick={handleSync} disabled={isSyncing}>
-                      <Icons.refreshCw
-                        className={`mr-2 h-4 w-4 ${isSyncing ? "animate-spin" : ""}`}
-                      />
-                      {isSyncing ? "Synchronizing..." : "Synchronize Data"}
-                    </Button>
-                  </div>
-                </div>
+                <EmbeddingsSettings
+                  autoUpdate={autoUpdateEmbeddings}
+                  onAutoUpdateChange={setAutoUpdateEmbeddings}
+                  onSync={handleSync}
+                  isSyncing={isSyncing}
+                />
               )}
             </div>
           </main>

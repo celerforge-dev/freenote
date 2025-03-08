@@ -4,12 +4,9 @@ export const SETTINGS = {
       baseUrl: "settings.ai.provider.baseUrl",
       apiKey: "settings.ai.provider.apiKey",
     },
-    options: {
-      model: "settings.ai.options.model",
+    embeddings: {
+      autoUpdate: "settings.ai.embeddings.autoUpdate",
     },
-  },
-  theme: {
-    mode: "settings.theme.mode",
   },
 } as const;
 
