@@ -35,12 +35,12 @@
   <h3 align="center">Freenote</h3>
 
   <p align="center">
-    一个支持Markdown的开源AI日记应用
+    一个支持 Markdown 的开源 AI 日记应用
     <br />
-    <a href="https://freenote.app" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;"><strong>访问Freenote应用</strong></a>
+    <a href="https://freenote.app" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;"><strong>访问 Freenote 应用</strong></a>
     <br />
     <br />
-    <a href="https://github.com/celerforge/freenote/issues/new?labels=bug&template=bug-report---.md">报告Bug</a>
+    <a href="https://github.com/celerforge/freenote/issues/new?labels=bug&template=bug-report---.md">报告 Bug</a>
     &middot;
     <a href="https://github.com/celerforge/freenote/issues/new?labels=enhancement&template=feature-request---.md">请求新功能</a>
   </p>
@@ -72,12 +72,12 @@
 
 [![Freenote截图][product-screenshot]](https://freenote.app)
 
-Freenote是一个支持Markdown的开源AI日记应用。您可以自由记录笔记，并借助AI助手轻松搜索和总结过去的条目，增强创意捕捉和管理能力。所有数据都存储在您的设备本地，确保隐私和安全。
+Freenote 是一个支持 Markdown 的开源 AI 日记应用。您可以自由记录笔记，并借助 AI 助手轻松搜索和总结过去的条目，增强创意捕捉和管理能力。所有数据都存储在您的设备本地，确保隐私和安全。
 
 ### 主要特点
 
-- **Markdown编辑器**：丰富的格式化功能和直观的快捷键
-- **AI助手**：智能搜索和总结您的笔记
+- **Markdown 编辑器**：丰富的格式化功能和直观的快捷键
+- **AI 助手**：智能搜索和总结您的笔记
 - **隐私优先**：所有数据存储在您的设备本地
 - **无干扰界面**：专注于写作的简洁界面
 
@@ -89,21 +89,21 @@ Freenote是一个支持Markdown的开源AI日记应用。您可以自由记录�
 
 ### 基本使用
 
-1. 点击日记部分，使用Markdown编写笔记
-2. 使用Markdown快捷键进行格式化：
-   - 输入`#`到`######`创建标题（H1-H6）
-   - 输入`*`或`-`创建项目符号列表
-   - 输入`>`创建引用块
-   - 选择文本 + `Ctrl/Cmd+B`加粗，`Ctrl/Cmd+I`斜体
-   - 输入`` ` ``创建内联代码，或` ``` `创建代码块
+1. 点击日记部分，使用 Markdown 编写笔记
+2. 使用 Markdown 快捷键进行格式化：
+   - 输入 `#` 到 `######` 创建标题（H1-H6）
+   - 输入 `*` 或 `-` 创建项目符号列表
+   - 输入 `>` 创建引用块
+   - 选择文本 + `Ctrl/Cmd+B` 加粗，`Ctrl/Cmd+I` 斜体
+   - 输入 `` ` `` 创建内联代码，或 ` ``` ` 创建代码块
 
-### AI功能
+### AI 功能
 
-1. 前往设置 → 添加您的OpenAI API密钥
+1. 前往设置 → 添加您的 OpenAI API 密钥
 2. 使用聊天功能询问有关您笔记的问题
-3. 借助AI助手搜索所有条目
+3. 借助 AI 助手搜索所有条目
 
-**注意：** AI功能需要OpenAI API密钥
+**注意：** AI 功能需要 OpenAI API 密钥
 
 <p align="right">(<a href="#readme-top">返回顶部</a>)</p>
 
@@ -115,8 +115,8 @@ Freenote是一个支持Markdown的开源AI日记应用。您可以自由记录�
 
 ### 前提条件
 
-- Node.js（v18或更高版本）
-- npm或pnpm
+- Node.js（v18 或更高版本）
+- npm 或 pnpm
   ```sh
   npm install npm@latest -g
   # 或
@@ -149,12 +149,13 @@ Freenote是一个支持Markdown的开源AI日记应用。您可以自由记录�
 
 ## 路线图
 
-- [ ] 增强AI工具
-  - [ ] 关键词搜索的AI总结工具，显示相关笔记和连接
-  - [ ] 从笔记生成AI驱动的知识库
+- [ ] 增强 AI 工具
+  - [ ] 关键词搜索的 AI 总结工具，显示相关笔记和连接
+  - [ ] 从笔记生成 AI 驱动的知识库
 - [ ] 存储代码可读性优化
 - [ ] 笔记导入/导出功能
 - [ ] 多设备数据同步
+- [ ] 使用 Tauri 添加桌面应用
 
 查看[未解决的问题](https://github.com/celerforge/freenote/issues)获取完整的功能提议和已知问题列表。
 
@@ -178,7 +179,7 @@ Freenote是一个支持Markdown的开源AI日记应用。您可以自由记录�
 
 ## 许可证
 
-根据AGPL-3.0许可证分发。有关更多信息，请参阅`LICENSE`。
+根据 AGPL-3.0 许可证分发。有关更多信息，请参阅 `LICENSE`。
 
 <p align="right">(<a href="#readme-top">返回顶部</a>)</p>
 

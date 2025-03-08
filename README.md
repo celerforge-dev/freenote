@@ -157,6 +157,7 @@ To get a local copy up and running, follow these simple steps.
 - [ ] Storage code readability optimization
 - [ ] Note import/export functionality
 - [ ] Multi-device data synchronization
+- [ ] Add desktop app using Tauri
 
 See the [open issues](https://github.com/celerforge/freenote/issues) for a full list of proposed features and known issues.
 
