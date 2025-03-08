@@ -84,7 +84,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>AI</SidebarGroupLabel>
           <SidebarMenu>
-            <Collapsible className="group/collapsible" defaultOpen>
+            <Collapsible className="group/collapsible" defaultOpen={false}>
               <SidebarMenuItem>
                 <SidebarMenuButton
                   isActive={pathname === "/chat"}
@@ -99,6 +99,7 @@ export function AppSidebar() {
                   <Link
                     href="/chat"
                     className="flex flex-1 items-center justify-between"
+                    title="New chat"
                   >
                     Chat
                     <Icons.circlePlus className="hidden h-4 w-4 group-hover/chat:block" />
