@@ -26,7 +26,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [note, setNote] = useState<Note | null>(null);
   const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
   const debouncedContent = useDebounce(content, 1000);
+  const debouncedTitle = useDebounce(title, 1000);
 
   const loadNote = useCallback(async () => {
     try {
@@ -34,6 +36,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       if (result) {
         setNote(result);
         setContent(result.content);
+        setTitle(result.title);
       }
     } catch (error) {
       console.error("Failed to load note:", error);
@@ -46,15 +49,17 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   useEffect(() => {
     const updateNote = async () => {
-      if (!note || content === note.content) return;
+      if (!note) return;
+      if (content === note.content && title === note.title) return;
 
       try {
         await db.notes.update(note.id, {
           content,
+          title,
           updatedAt: new Date(),
         });
         setNote((prev) =>
-          prev ? { ...prev, content, updatedAt: new Date() } : null,
+          prev ? { ...prev, content, title, updatedAt: new Date() } : null,
         );
       } catch (error) {
         console.error("Failed to update note:", error);
@@ -62,7 +67,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     };
 
     updateNote();
-  }, [debouncedContent, note, content]);
+  }, [debouncedContent, debouncedTitle, note, content, title]);
 
   const handleDelete = async () => {
     if (!note) return;
@@ -122,7 +127,16 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">{note.title}</h1>
+          {note.type === NoteType.Knowledge ? (
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="-ml-2 w-full rounded border-none bg-transparent px-2 text-3xl font-bold focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          ) : (
+            <h1 className="text-3xl font-bold">{note.title}</h1>
+          )}
           <div className="text-sm text-muted-foreground">
             {new Date(note.createdAt).toLocaleDateString()}
           </div>
