@@ -147,6 +147,28 @@ export default function SettingsModal({
             </SidebarContent>
           </Sidebar>
           <main className="flex h-[480px] flex-1 flex-col overflow-hidden">
+            <div className="mb-4 flex border-b px-4 pt-4 md:hidden">
+              <button
+                className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                  activeTab === "provider"
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                onClick={() => setActiveTab("provider")}
+              >
+                Provider
+              </button>
+              <button
+                className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+                  activeTab === "embeddings"
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                onClick={() => setActiveTab("embeddings")}
+              >
+                Embeddings
+              </button>
+            </div>
             <div className="relative flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0">
               {activeTab === "provider" && (
                 <div className="space-y-4 py-4">
@@ -192,7 +214,7 @@ export default function SettingsModal({
                       after creating an account.
                     </p>
                   </div>
-                  <div className="fixed bottom-0 right-0 flex items-center gap-4 p-4">
+                  <div className="mt-8 flex items-center justify-end gap-4">
                     <Button variant="outline" onClick={onClose}>
                       Cancel
                     </Button>
