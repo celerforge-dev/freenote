@@ -73,6 +73,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     if (!note) return;
 
     try {
+      // Delete all embeddings associated with this note
+      await db.embeddings.where("noteId").equals(note.id).delete();
+      // Then delete the note itself
       await db.notes.delete(note.id);
       toast.success("Note deleted.");
       router.push(note.type === NoteType.Journal ? "/journal" : "/knowledge");
