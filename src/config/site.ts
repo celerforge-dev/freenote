@@ -5,6 +5,7 @@ export const siteConfig = {
   url: "freenote.app",
   keywords: [
     "AI journal app",
+    "AI diary app",
     "Markdown support",
     "note-taking application",
     "AI-assisted note search",
