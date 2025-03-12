@@ -80,7 +80,7 @@ export default function Page() {
             placeholder="Start typing..."
             onValueChange={(value) => handleContentChange(journal.id, value)}
             contentEditableClassName={
-              index === 0 ? "min-h-[calc(100vh-192px)]" : "min-h-56"
+              index === 0 ? "min-h-[calc(100vh-208px)]" : "min-h-56"
             }
           />
         </div>
