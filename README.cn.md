@@ -156,6 +156,7 @@ Freenote 是一个支持 Markdown 的开源 AI 日记应用。您可以自由记
 - [ ] 笔记导入/导出功能
 - [ ] 多设备数据同步
 - [ ] 使用 Tauri 添加桌面应用
+- [ ] 添加笔记标签
 
 查看[未解决的问题](https://github.com/celerforge/freenote/issues)获取完整的功能提议和已知问题列表。
 
