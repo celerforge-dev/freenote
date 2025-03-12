@@ -164,7 +164,11 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           </div>
         </div>
 
-        <Editor markdown={content} onValueChange={setContent} />
+        <Editor
+          markdown={content}
+          onValueChange={setContent}
+          contentEditableClassName="min-h-[calc(100vh-300px)]"
+        />
       </div>
     </div>
   );

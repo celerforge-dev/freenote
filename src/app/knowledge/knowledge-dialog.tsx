@@ -121,6 +121,7 @@ export function KnowledgeDialog({
                       markdown={field.value}
                       onValueChange={field.onChange}
                       className="min-h-[400px] rounded-md border px-3 py-1"
+                      contentEditableClassName="min-h-[400px]"
                     />
                   </FormControl>
                   <FormMessage />

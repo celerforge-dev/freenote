@@ -60,7 +60,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Notes</SidebarGroupLabel>
-          <SidebarMenu>
+          <SidebarMenu className="mb-1">
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={pathname === "/"}>
                 <Link href="/">

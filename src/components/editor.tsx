@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import {
   MDXEditor,
   MDXEditorProps,
@@ -15,17 +16,28 @@ import { FC } from "react";
 
 interface EditorProps extends MDXEditorProps {
   onValueChange: (value: string) => void;
+  className?: string;
+  contentEditableClassName?: string;
 }
 
 /**
  * Extend this Component further with the necessary plugins or props you need.
  * proxying the ref is necessary. Next.js dynamically imported components don't support refs.
  */
-const Editor: FC<EditorProps> = ({ onValueChange, ...props }: EditorProps) => {
+const Editor: FC<EditorProps> = ({
+  onValueChange,
+  className,
+  contentEditableClassName,
+  ...props
+}: EditorProps) => {
   return (
     <MDXEditor
       onChange={onValueChange}
-      contentEditableClassName="prose prose-stone !p-0"
+      className={className}
+      contentEditableClassName={cn(
+        "prose prose-stone !p-0",
+        contentEditableClassName,
+      )}
       {...props}
       plugins={[
         headingsPlugin({}),

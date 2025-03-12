@@ -79,6 +79,9 @@ export default function Page() {
             markdown={journal.content ?? ""}
             placeholder="Start typing..."
             onValueChange={(value) => handleContentChange(journal.id, value)}
+            contentEditableClassName={
+              index === 0 ? "min-h-[calc(100vh-192px)]" : "min-h-56"
+            }
           />
         </div>
       ))}
