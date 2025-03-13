@@ -186,6 +186,10 @@ Distributed under the AGPL-3.0 License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=celerforge-dev/freenote&type=Date)](https://www.star-history.com/#celerforge-dev/freenote&Date)
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
