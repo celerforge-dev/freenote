@@ -143,6 +143,24 @@ Freenote 是一个支持 Markdown 的开源 AI 日记应用。您可以自由记
    pnpm dev
    ```
 
+### Docker 部署
+
+您也可以使用 Docker 运行 Freenote：
+
+1. 构建 Docker 镜像
+
+   ```sh
+   docker build -t freenote .
+   ```
+
+2. 运行容器
+
+   ```sh
+   docker run -p 3000:3000 freenote
+   ```
+
+3. 在 http://localhost:3000 访问应用
+
 <p align="right">(<a href="#readme-top">返回顶部</a>)</p>
 
 <!-- ROADMAP -->

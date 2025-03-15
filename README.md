@@ -145,6 +145,24 @@ To get a local copy up and running, follow these simple steps.
    pnpm dev
    ```
 
+### Docker Deployment
+
+You can also run Freenote using Docker:
+
+1. Build the Docker image
+
+   ```sh
+   docker build -t freenote .
+   ```
+
+2. Run the container
+
+   ```sh
+   docker run -p 3000:3000 freenote
+   ```
+
+3. Access the application at http://localhost:3000
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
